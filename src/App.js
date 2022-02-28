@@ -3,13 +3,19 @@ import { useState, useEffect } from 'react';
 
 function App() {
   const [recipes, setRecipes] = useState([]);
+  const [fika, setFika] = useState([]);
   
   useEffect(() => {
     client
       .getEntries()
       .then((response) => {
         console.log(response);
-        setRecipes(response.items)
+        setRecipes(response.items);
+        const fikaRecipes = response.items.filter(recipe => {
+          return recipe.metadata.tags[0].sys.id === 'fika'
+        })
+        console.log(fikaRecipes);
+        setFika(fikaRecipes);
       })
       .catch(console.error);
   }, [])
@@ -33,6 +39,12 @@ function App() {
                 }) }
               </ul>
             </div>
+          )
+        })}
+        <h2>FILTER FIKA!!!!!</h2>
+        { fika.map((recipe) => {
+          return (
+            <h3 key={recipe.sys.id}>{recipe.fields.title}</h3>
           )
         })}
     </div>
